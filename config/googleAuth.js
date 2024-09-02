@@ -9,20 +9,15 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // Check if user already exists in our db
       let user = await User.findOne({ where: { googleId: profile.id } });
-      
       if (user) {
         return done(null, user);
       }
-
-      // If not, create a new user
       user = await User.create({
         username: profile.displayName,
         googleId: profile.id,
-        password: '', // No password is needed for Google auth
+        password: '',
       });
-
       done(null, user);
     } catch (error) {
       done(error, null);
